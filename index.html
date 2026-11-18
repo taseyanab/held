@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#120D2B">
+<title>Held: support for new mothers</title>
+<meta name="description" content="Held helps new mothers ask for specific help, lets family claim it, and notices when she may need more support.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --ink:#F1EDFF; --muted:#B7AEDB; --line:rgba(255,255,255,.14); --glass:rgba(255,255,255,.07);
+  --moon:#F3E3A6; --moonInk:#2A2250; --neb:#9B87F5; --teal:#6FD8C4; --rose:#F08DAA;
+  --serif:"Young Serif",Georgia,serif; --sans:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{font-size:16px;scroll-padding-top:env(safe-area-inset-top,0px)}
+html.big{font-size:19px}
+html,body{margin:0;color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-text-size-adjust:100%}
+body{
+  font-size:1rem;
+  min-height:100vh;
+  background-color:#120D2B;
+  background-image:
+    radial-gradient(1.3px 1.3px at 12% 18%,rgba(255,255,255,.95),transparent 60%),
+    radial-gradient(1px 1px at 68% 42%,rgba(255,255,255,.7),transparent 60%),
+    radial-gradient(1.5px 1.5px at 38% 76%,rgba(243,227,166,.9),transparent 60%),
+    radial-gradient(1px 1px at 86% 88%,rgba(255,255,255,.6),transparent 60%),
+    radial-gradient(1px 1px at 52% 8%,rgba(255,255,255,.8),transparent 60%),
+    linear-gradient(180deg,#120D2B 0%,#1E1548 55%,#2D1B5C 100%);
+  background-size:240px 240px,240px 240px,240px 240px,240px 240px,240px 240px,100% 100%;
+  background-attachment:scroll,scroll,scroll,scroll,scroll,fixed;
+}
+.app{max-width:480px;margin:0 auto;padding:16px 16px 120px;transition:filter .3s}
+.app.deep{filter:brightness(.8) saturate(.85)}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0;line-height:1.2}
+h1{font-size:1.875rem} h2{font-size:1.375rem} h3{font-size:1.125rem}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:.875rem}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.brand{font-family:var(--serif);font-size:1.75rem}
+.brand small{display:block;font-family:var(--sans);font-size:.8125rem;color:var(--muted)}
+.hbtns{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.card{background:var(--glass);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.card.alert{border-color:var(--rose);border-width:2px}
+.card.crisis{background:var(--moon);color:var(--moonInk);border-color:var(--moon)}
+.card.crisis a.btn{border-color:var(--moonInk);color:var(--moonInk)}
+.card.crisis a.btn.primary{background:var(--moonInk);color:var(--moon)}
+.stack{display:grid;gap:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.between{justify-content:space-between}
+button,.btn{font:inherit;cursor:pointer;min-height:46px;padding:10px 16px;border-radius:14px;border:1.5px solid var(--line);background:transparent;color:var(--ink);font-weight:500;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+button[disabled]{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--moon);outline-offset:2px}
+.primary{background:var(--moon);border-color:var(--moon);color:var(--moonInk);font-weight:700}
+.quiet{border-color:transparent;color:var(--muted);min-height:40px;padding:6px 10px}
+.full{width:100%}
+input[type=text],input[type=tel],textarea{font:inherit;width:100%;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:rgba(10,6,30,.45);color:var(--ink)}
+textarea{min-height:76px;resize:vertical}
+::placeholder{color:#8F86B8}
+label.field{display:grid;gap:6px;font-weight:500;font-size:.875rem}
+.moons{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:16px 0 8px}
+.moonbtn{display:grid;justify-items:center;gap:6px;padding:10px 0;min-height:88px;border-radius:16px;border:1.5px solid transparent}
+.moonbtn.on{border-color:var(--moon);background:rgba(243,227,166,.12)}
+.moonbtn .lbl{font-size:.75rem;color:var(--muted)}
+.moons.big .moonbtn{min-height:110px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:6px 14px;border-radius:999px;font-size:.875rem}
+.chip.on{background:var(--neb);color:#1a1240;border-color:var(--neb);font-weight:700}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:rgba(10,6,30,.45);padding:4px;border-radius:14px}
+.seg button{border:none;min-height:40px;border-radius:10px;font-size:.875rem}
+.seg button.on{background:var(--neb);color:#1a1240;font-weight:700}
+.preset{justify-content:flex-start;text-align:left;width:100%}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.1);color:var(--muted);white-space:nowrap}
+.badge.claimed{background:rgba(155,135,245,.3);color:var(--ink)}
+.badge.done{background:rgba(111,216,196,.2);color:var(--teal)}
+.badge.late,.badge.stale{background:rgba(240,141,170,.2);color:var(--rose)}
+.req{display:grid;gap:10px;padding:14px 0;border-top:1px solid var(--line)}
+.req:first-of-type{border-top:none;padding-top:0}
+.req .t{font-weight:500}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:baseline}
+.quote{border-left:4px solid var(--moon);padding:8px 12px;background:rgba(255,255,255,.06);border-radius:0 12px 12px 0;font-size:.9375rem}
+nav.tabs{z-index:20;position:fixed;left:0;right:0;bottom:0;background:rgba(18,13,43,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}
+nav.tabs .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+nav.tabs button{border:none;min-height:48px;padding:6px 2px;font-size:.8125rem}
+nav.tabs button.on{background:rgba(155,135,245,.25);font-weight:700}
+.crisisbar{display:block;text-align:center;font-size:.875rem;color:var(--muted);padding:10px;border-radius:12px;background:rgba(255,255,255,.06);text-decoration:none}
+.crisisbar b{color:var(--ink)}
+.warpbar{display:flex;justify-content:space-between;align-items:center;gap:8px;background:rgba(155,135,245,.2);border:1px solid var(--neb);border-radius:12px;padding:6px 12px;margin-bottom:10px;font-size:.875rem}
+.warpbar.bad{background:rgba(240,141,170,.15);border-color:var(--rose)}
+.toast{z-index:80;position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--moon);color:var(--moonInk);font-weight:500;padding:10px 16px;border-radius:999px;font-size:.875rem;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+.toast.act{pointer-events:auto}
+.toast .undo{margin-left:10px;min-height:34px;padding:2px 14px;border-radius:999px;border-color:var(--moonInk);color:var(--moonInk);font-weight:700}
+svg.sky{width:100%;height:auto;display:block}
+.spin{transform-origin:160px 160px;transform-box:view-box;animation:spin linear infinite}
+.spin.rev{animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.dots{display:flex;gap:8px;justify-content:center}
+.dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25)}
+.dots i.on{background:var(--moon)}
+.slide{text-align:center;display:grid;gap:14px;justify-items:center;padding:12px 4px}
+.slide p{max-width:34ch}
+.night{text-align:center;display:grid;gap:14px;justify-items:center}
+.breath{width:150px;height:150px;border-radius:50%;margin:18px auto;background:radial-gradient(circle,var(--moon) 0,rgba(243,227,166,.25) 65%,transparent 72%);animation:breathe 10s ease-in-out infinite}
+@keyframes breathe{0%{transform:scale(.6)}40%{transform:scale(1)}100%{transform:scale(.6)}}
+details.acc{border-top:1px solid var(--line);padding:12px 0}
+details.acc:first-of-type{border-top:none}
+details.acc summary{cursor:pointer;font-weight:700;min-height:32px}
+details.acc p{margin-top:8px;color:var(--muted)}
+ul.plain{margin:6px 0 0;padding-left:20px;color:var(--muted)}
+.cols{display:grid;gap:12px}
+.chat{display:grid;gap:10px}
+.bubble{padding:10px 14px;border-radius:16px;max-width:92%;overflow-wrap:anywhere}
+.bubble.me{background:rgba(155,135,245,.3);margin-left:auto}
+.bubble.ai{background:rgba(255,255,255,.08)}
+.qr{display:grid;place-items:center;background:var(--moon);padding:12px;border-radius:16px;width:max-content;margin:0 auto;min-width:80px;min-height:80px}
+.qr img,.qr canvas{display:block}
+.tour-block{position:fixed;inset:0;z-index:55}
+.tour-block.dim{background:rgba(8,5,22,.78)}
+.tour-card{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:456px;margin:0 auto;z-index:70;background:#241A52;border:1.5px solid var(--moon);border-radius:20px;padding:16px;display:grid;gap:10px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.tour-hl{position:relative;z-index:60;pointer-events:none;border-radius:18px;box-shadow:0 0 0 4px var(--moon),0 0 0 9999px rgba(8,5,22,.78)}
+#famToggle.tour-hl,#warpBtn.tour-hl{background:#1E1548}
+#splash{position:fixed;inset:0;z-index:100;display:grid;align-items:end;justify-items:center;padding:0 24px calc(48px + env(safe-area-inset-bottom,0px));background:#120D2B url(cover.jpg) center/cover no-repeat;transition:opacity .6s ease;cursor:pointer}
+#splash.out{opacity:0;pointer-events:none}
+#splash .tag{font-family:var(--serif);font-size:1.0625rem;color:#F1EDFF;text-shadow:0 0 14px rgba(0,0,0,.8);text-align:center}
+@media (prefers-reduced-motion:reduce){
+  #splash{transition:none}
+  *{transition:none!important}
+  .spin{animation:none;transform:rotate(var(--a,0deg))}
+  .breath{animation:none;transform:scale(.85)}
+}
+</style>
+</head>
+<body>
+<div id="splash" aria-hidden="true"><div class="tag">Support for new mothers</div></div>
+<div class="app" id="app">
+  <header>
+    <div class="brand">Held<small>Support for new mothers</small></div>
+    <div class="hbtns">
+      <button id="famToggle" class="quiet small" data-act="family" type="button"></button>
+      <button id="warpBtn" class="quiet small" data-act="warp" type="button">Skip 3 days</button>
+    </div>
+  </header>
+  <div id="bars"></div>
+  <main id="main" aria-live="polite"></main>
+</div>
+<nav class="tabs" id="tabs" aria-label="Main"><div class="in">
+  <button type="button" data-act="tab" data-tab="today">Today</button>
+  <button type="button" data-act="tab" data-tab="orbit">Orbit</button>
+  <button type="button" data-act="tab" data-tab="requests">Requests</button>
+  <button type="button" data-act="tab" data-tab="helper">Helper</button>
+  <button type="button" data-act="tab" data-tab="more">More</button>
+</div></nav>
+<div id="tour"></div>
+<div class="toast" id="toast" role="status"></div>
+<noscript>Held needs JavaScript to run.</noscript>
+
+<script src="https://cdn.auth0.com/js/auth0-spa-js/2.1/auth0-spa-js.production.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+/* ============================================================
+   HELD v3
+   Without the two keys below, everything runs on this device (demo mode).
+   With them, circles sync across phones through Supabase and the AI Helper
+   and ElevenLabs voice work through two Supabase Edge Functions.
+   See README.md for the 10 minute setup.
+   ============================================================ */
+const SUPABASE_URL = 'https://cmyplbojlxkakcqkhgkw.supabase.co';       // example: https://abcdefgh.supabase.co
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNteXBsYm9qbHhrYWtjcWtoZ2t3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE3MTkxMjgsImV4cCI6MjEwNzI5NTEyOH0.Kvj8Gtg1fPBHh1TNP67a08gYgU1yu03dQ3w1DYDzrcA';  // the public anon key. Safe in the browser because schema.sql locks the tables.
+const AUTH0_DOMAIN = '';       // optional login. Example: dev-abc123.us.auth0.com (hostname only, no https)
+const AUTH0_CLIENT_ID = '';    // from your Auth0 Single Page Application
+
+const BACKEND = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+const AUTH0_ON = BACKEND && !!(AUTH0_DOMAIN && AUTH0_CLIENT_ID);
+const HELPER_URL = BACKEND ? SUPABASE_URL + '/functions/v1/helper' : '';
+const VOICE_PROXY = BACKEND ? SUPABASE_URL + '/functions/v1/speak' : '';
+const AUTH = BACKEND ? { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY } : {};
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+// Demo time travel: every "now" in the app goes through NOW()
+const NOW = () => Date.now() + ((S && S.warp) || 0) * 864e5;
+const dkey = (d = new Date(NOW())) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const parseKey = k => new Date(k + 'T00:00:00');
+const dayDiff = (a, b) => Math.round((parseKey(b) - parseKey(a)) / 864e5);
+const uid = () => (window.crypto && window.crypto.randomUUID) ? window.crypto.randomUUID()
+  : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 3 | 8)).toString(16); });
+const endOfDay = off => { const d = new Date(NOW()); d.setDate(d.getDate() + off); d.setHours(23, 59, 59, 999); return d.getTime(); };
+const hashStr = s => { let h = 7; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 100003; return h; };
+const colorFor = n => 'hsl(' + (hashStr(n) % 360) + ',75%,72%)';
+const buzz = () => { try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {} };
+
+// ---------- store ----------
+const KEY = 'held.v3', ME_KEY = 'held.me';
+const fresh = () => ({ mom: '', person: '', phone: '', alerts: true, warp: 0, toured: false, big: false, demo: false, circleId: '', ownerKey: '', moods: [], requests: [] });
+function load() { try { return Object.assign(fresh(), JSON.parse(localStorage.getItem(KEY)) || {}); } catch (e) { return fresh(); } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function loadMe() { try { return localStorage.getItem(ME_KEY) || ''; } catch (e) { return ''; } }
+let S = load();
+let meName = loadMe();
+
+// ---------- constants ----------
+const MOON = ['New moon', 'Crescent', 'Half', 'Gibbous', 'Full'];
+const DESC = ['Barely any light today.', 'Some light, but it feels heavy.', 'Steady. Somewhere in between.', 'Mostly bright.', 'Full of light.'];
+const TAGS = ['Slept a little', 'Ate something', 'Felt overwhelmed', 'Felt alone', 'Cried', 'Felt joy'];
+const WHEN = { today: ['Today', 0], tomorrow: ['Tomorrow', 1], week: ['This week', 6] };
+const PRESETS = [
+  { k: 'dinner', t: 'Dinner, home cooked or delivered', gift: 'https://www.doordash.com/' },
+  { k: 'nap', t: 'Watch the baby so I can sleep for 2 hours' },
+  { k: 'shower', t: 'Hold the baby while I shower' },
+  { k: 'laundry', t: 'Laundry or dishes' },
+  { k: 'groceries', t: 'Groceries or a pharmacy pickup', gift: 'https://www.instacart.com/' },
+  { k: 'call', t: 'A phone call, no advice, just listening' },
+  { k: 'visit', t: 'A short visit, no hosting needed' }
+];
+const TAGMAP = { 'Slept a little': 1, 'Felt alone': 5, 'Felt overwhelmed': 3, 'Cried': 5 };
+const CRISIS_RE = /(kill myself|killing myself|suicid|end it all|end my life|want to die|wanna die|better off (dead|without me)|hurt myself|harm myself|hurting myself|cut myself|(hurt|harm|hurting|harming|shake|shaking) (my|the) (baby|child|kid|newborn)|can'?t go on|don'?t want to (be here|live|exist)|no reason to live|hearing voices)/i;
+const SLIDES = [
+  { h: 'You are the center.', p: 'Held lets you ask for specific help and keeps track until someone says yes.', art: () => orbitArt() },
+  { h: 'Your people see only what you choose.', p: 'Family sees open requests and a gentle note when you could use support. They never see your scores or notes.', art: () => moon(3, 96) },
+  { h: 'Check in under a minute.', p: 'Pick a moon. Held notices when it may be time to bring in your person.', art: () => `<div class="row" style="gap:6px">${[1, 2, 3, 4, 5].map(i => moon(i, 38)).join('')}</div>` }
+];
+const TOUR = [
+  { tab: 'today', sel: '#moonsrow', h: 'Check in with a moon', p: 'Pick the moon that matches today. Add a tag or one small win if you like. It takes under a minute.' },
+  { tab: 'today', sel: '#nightbtn', h: 'Up at night?', p: 'Night mode dims the screen, guides your breathing, and lets you check in with one tap.' },
+  { tab: 'requests', sel: '#whenseg', h: 'Ask for specific help', p: 'Choose a day, then tap a request. Family claims it. Changed your mind? Undo appears for a few seconds after every change.' },
+  { tab: 'helper', sel: '#helperbox', h: 'Ask the Helper', p: 'Tell it what is going on. It suggests specific asks you can add with one tap and writes the hard message for you.' },
+  { tab: 'orbit', sel: '#orbitcard', h: 'Your orbit', p: 'Close moons are people who said yes. Faint dots are asks still waiting. Late claims turn rose.' },
+  { tab: 'more', sel: '#helpcard', h: 'Help is always close', p: 'Crisis lines are one tap away. This page also has learning cards and a doctor visit summary you control.' },
+  { tab: 'today', sel: '#famToggle', h: 'See what family sees', p: 'Switch to family view to claim tasks. Family only sees open requests and a gentle summary, never your scores.' },
+  { tab: 'today', sel: '#warpBtn', h: 'Demo shortcut', p: 'Skip 3 days to watch Held notice a quiet stretch, flag a late claim, and prepare the alert note.' }
+];
+
+// ---------- ui state ----------
+const params = new URLSearchParams(location.search);
+const PARAM_CID = params.get('c') || '';
+let tab = 'today';
+let family = params.get('family') === '1' || !!PARAM_CID;
+let when = 'today';
+let customText = '';
+let crisisShown = false;
+let night = false;
+let slide = 0;
+let docNotes = false;
+let tour = -1;
+let user = null, auth0c = null, authReady = !AUTH0_ON, authBusy = false;
+let chat = [];
+let helperBusy = false;
+let helperText = '';
+let draft = newDraft();
+function newDraft() {
+  const m = S.moods.find(x => x.d === dkey());
+  return m ? { v: m.v, tags: [...m.tags], note: m.note, win: m.win || '', crisis: m.crisis } : { v: 0, tags: [], note: '', win: '', crisis: false };
+}
+
+// ---------- network layer (Supabase RPC) ----------
+let cache = { mom: '', needs: false, requests: [] };
+let netOk = true, pending = 0, lastNeeds = null, creating = false, lastErrToast = 0, lastCreateTry = 0;
+const circleId = () => S.circleId || PARAM_CID;
+const NET = () => BACKEND && !!circleId();
+const isOwner = () => !!(S.circleId && (S.ownerKey || user));
+const remoteFamily = () => family && !isOwner() && !!PARAM_CID;
+const reqs = () => NET() ? cache.requests : S.requests;
+const momName = () => S.mom || cache.mom || '';
+
+// Supabase accepts the Auth0 ID token (it carries role: authenticated, added by an Auth0 Action).
+async function userToken() {
+  if (!auth0c || !user) return '';
+  try {
+    let c = await auth0c.getIdTokenClaims();
+    if (!c || c.exp * 1000 < Date.now() + 60000) { await auth0c.getTokenSilently({ cacheMode: 'off' }); c = await auth0c.getIdTokenClaims(); }
+    return c ? c.__raw : '';
+  } catch (e) { return ''; }
+}
+async function rpc(fn, args) {
+  const call = tok => fetch(SUPABASE_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + (tok || SUPABASE_ANON_KEY) },
+    body: JSON.stringify(args)
+  });
+  const tok = await userToken();
+  let r = await call(tok);
+  // If Supabase does not accept the login token yet, fall back to the anonymous key (owner key still works).
+  if (!r.ok && tok && (r.status === 401 || r.status === 403)) r = await call('');
+  if (!r.ok) throw new Error(fn + ' ' + r.status);
+  const t = await r.text();
+  return t ? JSON.parse(t) : null;
+}
+async function netDo(fn, args) {
+  pending++;
+  try { const out = await rpc(fn, args); netOk = true; return out; }
+  catch (e) {
+    netOk = false;
+    if (Date.now() - lastErrToast > 8000) { lastErrToast = Date.now(); toast("Couldn't sync. Check your connection."); }
+  } finally { pending--; if (pending === 0) pull(); }
+}
+async function pull() {
+  if (!NET() || pending > 0) return;
+  try {
+    const d = await rpc('get_circle', { p_id: circleId() });
+    netOk = true;
+    const next = d ? { mom: d.mom, needs: d.needs, requests: d.requests || [] } : { mom: '', needs: false, requests: [], gone: true };
+    if (JSON.stringify(next) !== JSON.stringify(cache)) { cache = next; softRender(); }
+  } catch (e) { netOk = false; }
+  renderBars();
+}
+function softRender() {
+  const a = document.activeElement;
+  if (a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)) return;
+  if (tour >= 0) return;
+  render();
+}
+async function ensureCircle() {
+  if (!BACKEND || !authReady || creating || S.circleId || !S.mom || S.demo) return;
+  if (Date.now() - lastCreateTry < 15000) return;
+  lastCreateTry = Date.now(); creating = true;
+  try {
+    const d = await rpc('create_circle', { p_mom: S.mom });
+    S.circleId = d.id; S.ownerKey = d.owner_key; save();
+    cache = { mom: S.mom, needs: false, requests: [] }; netOk = true;
+    const keep = S.requests; S.requests = [];
+    keep.forEach(r => reqAdd(r, true));
+  } catch (e) { netOk = false; toast("Couldn't reach the server. Running on this device for now."); }
+  creating = false; render();
+}
+function syncStatus() {
+  if (!NET() || !isOwner()) return;
+  const v = !!supportSignal();
+  if (v === lastNeeds) return;
+  lastNeeds = v;
+  netDo('owner_set_status', { p_circle: S.circleId, p_key: S.ownerKey || null, p_mom: S.mom, p_needs: v });
+}
+// ---------- Auth0 login (optional) ----------
+const returnUrl = () => location.origin + location.pathname;
+async function afterLogin() {
+  try {
+    const mine = await rpc('my_circle', {});
+    if (mine && mine.id) {
+      if (S.circleId !== mine.id) { S.circleId = mine.id; S.ownerKey = ''; cache = { mom: mine.mom, needs: false, requests: [] }; lastNeeds = null; }
+      if (!S.mom) S.mom = mine.mom;
+      S.demo = false; save();
+    } else if (S.circleId && S.ownerKey) {
+      await rpc('claim_circle_for_user', { p_circle: S.circleId, p_key: S.ownerKey });
+    }
+  } catch (e) { netOk = false; }
+}
+async function initAuth() {
+  if (!AUTH0_ON || PARAM_CID) { authReady = true; return; }
+  const sp = new URLSearchParams(location.search);
+  const returning = sp.has('code') && sp.has('state');
+  authBusy = returning; if (returning) renderBars();
+  try {
+    const lib = window.auth0;
+    const opts = { domain: AUTH0_DOMAIN, clientId: AUTH0_CLIENT_ID, cacheLocation: 'localstorage', useRefreshTokens: true, authorizationParams: { redirect_uri: returnUrl() } };
+    if (lib && lib.createAuth0Client) auth0c = await lib.createAuth0Client(opts);
+    else if (lib && lib.Auth0Client) auth0c = new lib.Auth0Client(opts);
+    if (!auth0c) throw new Error('Auth0 SDK did not load');
+    if (returning) { await auth0c.handleRedirectCallback(); history.replaceState({}, '', location.pathname); }
+    if (await auth0c.isAuthenticated()) { user = await auth0c.getUser(); await afterLogin(); }
+  } catch (e) { if (returning) toast("Sign in didn't finish. Try again from More."); }
+  authBusy = false; authReady = true; render();
+  if (NET()) pull();
+}
+function familyLink() { return location.origin + location.pathname + (S.circleId ? '?c=' + S.circleId : '?family=1'); }
+
+// ---------- request operations (work in demo mode and online mode) ----------
+const findReq = id => reqs().find(x => x.id === id);
+function reqAdd(r, skipLocalPush) {
+  reqs().unshift(r); save();
+  if (NET() && isOwner()) netDo('owner_add_request', { p_circle: S.circleId, p_key: S.ownerKey || null, p_id: r.id, p_text: r.text, p_kind: r.kind, p_gift: r.gift || '', p_when: r.when, p_due: r.due });
+}
+function reqRemove(id) {
+  const arr = reqs(), i = arr.findIndex(x => x.id === id);
+  if (i < 0) return null;
+  const r = arr.splice(i, 1)[0]; save();
+  if (NET() && isOwner()) netDo('owner_remove_request', { p_circle: S.circleId, p_key: S.ownerKey || null, p_id: id });
+  return r;
+}
+function reqClaim(id, name) {
+  const r = findReq(id); if (!r) return;
+  r.claimedBy = name; save();
+  if (NET()) netDo('claim_request', { p_circle: circleId(), p_id: id, p_name: name });
+}
+function reqUnclaim(id, name) {
+  const r = findReq(id); if (!r) return;
+  r.claimedBy = ''; r.done = false; save();
+  if (NET()) netDo('unclaim_request', { p_circle: circleId(), p_id: id, p_name: name });
+}
+function reqDone(id, done) {
+  const r = findReq(id); if (!r) return;
+  r.done = done; r.doneAt = done ? NOW() : 0; save();
+  if (!NET()) return;
+  if (isOwner()) netDo('owner_set_done', { p_circle: S.circleId, p_key: S.ownerKey || null, p_id: id, p_done: done });
+  else netDo('family_set_done', { p_circle: circleId(), p_id: id, p_name: (r.claimedBy || meName).trim(), p_done: done });
+}
+
+// ---------- logic ----------
+function status(r) {
+  if (r.done) return 'done';
+  if (r.claimedBy) return NOW() > r.due ? 'late' : 'claimed';
+  return NOW() > r.due ? 'stale' : 'open';
+}
+const BADGE = { open: 'Open', stale: 'Still open', claimed: 'Claimed', late: 'Past due', done: 'Done' };
+
+function supportSignal() {
+  const m = [...S.moods].sort((a, b) => a.d < b.d ? -1 : 1);
+  if (!m.length) return null;
+  const last = m[m.length - 1];
+  const last3 = m.slice(-3);
+  const gap = dayDiff(last.d, dkey());
+  if (last.crisis && gap < 2) return { why: 'You said you were having a hard moment.' };
+  if (last3.length === 3 && last3.every(x => x.v <= 2)) return { why: 'Your last three check ins were low.' };
+  if (gap >= 2) return { why: "You haven't checked in for " + gap + ' days.' };
+  return null;
+}
+const needsNow = () => remoteFamily() ? !!cache.needs : !!supportSignal();
+const alertText = () => 'Held check in: ' + S.mom + ' could use extra support right now. A call, a meal, or a visit would help. She is not asking for advice.';
+const smsHref = (phone, body) => 'sms:' + phone + '?body=' + encodeURIComponent(body);
+
+function shareText(text) {
+  if (navigator.share) { navigator.share({ text }).catch(() => {}); return; }
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast('Copied. Paste it into a message.')); return; }
+  toast('Copy this: ' + text);
+}
+
+function suggestions() {
+  const m = S.moods.find(x => x.d === dkey());
+  if (!m) return [];
+  const idx = [];
+  m.tags.forEach(t => { const i = TAGMAP[t]; if (i != null && !idx.includes(i)) idx.push(i); });
+  if (m.v <= 2 && !idx.includes(0)) idx.push(0);
+  return idx.filter(i => !reqs().some(r => !r.done && r.text === PRESETS[i].t)).slice(0, 2);
+}
+function jarWin() {
+  const wins = S.moods.filter(x => x.win).map(x => x.win);
+  return wins.length ? wins[hashStr(dkey()) % wins.length] : '';
+}
+function docSummary() {
+  const cut = new Date(NOW()); cut.setDate(cut.getDate() - 13);
+  const ck = dkey(cut);
+  const m = S.moods.filter(x => x.d >= ck);
+  if (!m.length) return '';
+  const avg = (m.reduce((a, x) => a + x.v, 0) / m.length).toFixed(1);
+  const low = m.filter(x => x.v <= 2).length;
+  const tc = {}; m.forEach(x => x.tags.forEach(t => { tc[t] = (tc[t] || 0) + 1; }));
+  const top = Object.entries(tc).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0].toLowerCase()).join(', ');
+  const notes = docNotes ? m.filter(x => x.note).map(x => x.d + ': ' + x.note).join(' | ') : '';
+  return 'Held summary for ' + S.mom + ', last 14 days. Check ins: ' + m.length + '. Average light: ' + avg + ' out of 5. Low days: ' + low + '.' +
+    (top ? ' Most common: ' + top + '.' : '') + (notes ? ' Notes: ' + notes : '');
+}
+
+// ---------- AI Helper ----------
+const draftFull = d => (S.person && !family ? 'Hi ' + S.person + ', ' : '') + d;
+
+function localHelper(text, role) {
+  const t = text.toLowerCase();
+  const has = (...w) => w.some(x => t.includes(x));
+  if (role === 'family') {
+    return { reply: "Specific beats vague. Pick one open request and claim it, or offer a concrete time, like 'I'll bring dinner Tuesday at 6.' Listening without fixing is a real gift too.", asks: [], draft: '', crisis: false, fallback: true };
+  }
+  const asks = [];
+  if (has('sleep', 'tired', 'exhaust', 'nap', 'awake')) asks.push(1);
+  if (has('alone', 'lonely', 'isolated', 'nobody', 'no one')) asks.push(5);
+  if (has('overwhelm', 'drown', 'too much', 'behind', 'mess', 'laundry', 'dishes')) asks.push(3);
+  if (has('hungry', 'eat', 'food', 'dinner', 'cook', 'groceries')) asks.push(0);
+  if (has('shower', 'bath')) asks.push(2);
+  if (!asks.length) asks.push(0, 5);
+  const top = asks.slice(0, 2);
+  return {
+    reply: "That sounds like a lot, and you don't have to carry it alone. Asking for something small and specific works better than asking for 'help.' Here are two asks you could send right now.",
+    asks: top,
+    draft: "I'm having a hard time today and could use some help. Could you do this for me: " + PRESETS[top[0]].t.toLowerCase() + '? It would mean a lot.',
+    crisis: false, fallback: true
+  };
+}
+
+async function callHelper(text, role) {
+  const history = chat.slice(0, -1).filter(m => m.from && !m.crisis && m.text && !CRISIS_RE.test(m.text)).slice(-6).map(m => ({ from: m.from, text: m.text }));
+  const r = await fetch(HELPER_URL, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, AUTH), body: JSON.stringify({ role, message: text, history }) });
+  if (!r.ok) throw new Error('helper ' + r.status);
+  const d = await r.json();
+  const ids = Array.isArray(d.asks) ? d.asks.map(k => PRESETS.findIndex(p => p.k === k)).filter(i => i >= 0).slice(0, 2) : [];
+  return { reply: String(d.reply || '').slice(0, 700), asks: role === 'mom' ? ids : [], draft: d.draft ? String(d.draft).slice(0, 400) : '', crisis: !!d.crisis, fallback: false };
+}
+
+async function sendHelper(raw) {
+  const text = String(raw || '').trim();
+  if (!text || helperBusy) return;
+  const role = family ? 'family' : 'mom';
+  chat.push({ from: 'me', text }); helperText = '';
+  if (CRISIS_RE.test(text)) { chat.push({ from: 'ai', crisis: true }); render(); return; }
+  helperBusy = true; render();
+  let out;
+  try { out = BACKEND ? await callHelper(text, role) : localHelper(text, role); }
+  catch (e) { out = localHelper(text, role); }
+  helperBusy = false;
+  if (out.crisis) chat.push({ from: 'ai', crisis: true });
+  else chat.push({ from: 'ai', text: out.reply, asks: out.asks, draft: out.draft, fallback: out.fallback });
+  render();
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+// ---------- voice ----------
+async function speak(text) {
+  if (VOICE_PROXY) {
+    try {
+      const r = await fetch(VOICE_PROXY, { method: 'POST', headers: Object.assign({ 'Content-Type': 'application/json' }, AUTH), body: JSON.stringify({ text }) });
+      if (r.ok) { new Audio(URL.createObjectURL(await r.blob())).play(); return; }
+    } catch (e) {}
+  }
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(text); u.rate = 0.88;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } else toast('Voice is not available on this device.');
+}
+
+// ---------- toast with undo ----------
+let toastTimer, undoCb = null, snapJson = '';
+function snap() { snapJson = JSON.stringify(S); }
+function toast(msg, undo) {
+  const t = $('#toast');
+  if (undo === true) {
+    const j = snapJson;
+    undoCb = () => { S = Object.assign(fresh(), JSON.parse(j)); save(); draft = newDraft(); crisisShown = false; };
+  } else if (typeof undo === 'function') undoCb = undo;
+  else undoCb = null;
+  if (undoCb) buzz();
+  t.innerHTML = esc(msg) + (undoCb ? '<button class="undo" data-act="undo" type="button">Undo</button>' : '');
+  t.classList.add('show'); t.classList.toggle('act', !!undoCb);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show', 'act'); undoCb = null; }, undoCb ? 7000 : 2600);
+}
+
+// ---------- guided tour ----------
+function gotoStep() { const s = TOUR[tour]; if (s.tab) tab = s.tab; family = false; night = false; }
+function endTour() { tour = -1; S.toured = true; save(); tab = 'today'; window.scrollTo(0, 0); toast('You are all set. Replay the tour any time in More.'); }
+function renderTour() {
+  document.querySelectorAll('.tour-hl').forEach(e => e.classList.remove('tour-hl'));
+  const box = $('#tour');
+  if (tour < 0) { box.innerHTML = ''; return; }
+  const s = TOUR[tour];
+  const el = s.sel ? $(s.sel) : null;
+  if (el) { el.classList.add('tour-hl'); if (el.scrollIntoView) el.scrollIntoView({ block: 'center' }); }
+  box.innerHTML = `<div class="tour-block ${el ? '' : 'dim'}"></div>
+    <div class="tour-card" role="dialog" aria-label="Tutorial">
+      <div class="row between"><span class="muted small">Step ${tour + 1} of ${TOUR.length}</span><button class="quiet small" data-act="tourskip" type="button">Skip tour</button></div>
+      <h3>${s.h}</h3><p class="muted">${s.p}</p>
+      <div class="row" style="justify-content:flex-end">${tour > 0 ? '<button data-act="tourback" type="button">Back</button>' : ''}
+        <button class="primary" data-act="tournext" type="button">${tour === TOUR.length - 1 ? 'Finish' : 'Next'}</button></div>
+    </div>`;
+}
+
+// ---------- art ----------
+function moon(level, size) {
+  const base = '<circle cx="22" cy="22" r="20" fill="#2B2457" stroke="rgba(243,227,166,.55)" stroke-width="1.5"/>';
+  let lit = '';
+  if (level >= 5) lit = '<circle cx="22" cy="22" r="20" fill="#F3E3A6"/>';
+  else if (level > 1) {
+    const rx = level === 3 ? 0.01 : 11, sweep = level === 4 ? 1 : 0;
+    lit = `<path d="M22 2 A20 20 0 0 1 22 42 A${rx} 20 0 0 ${sweep} 22 2 Z" fill="#F3E3A6"/>`;
+  }
+  return `<svg width="${size}" height="${size}" viewBox="0 0 44 44" aria-hidden="true" style="filter:drop-shadow(0 0 ${level * 3}px rgba(243,227,166,.6))">${base}${lit}</svg>`;
+}
+function orbitArt() {
+  return `<svg width="150" height="150" viewBox="0 0 150 150" aria-hidden="true">
+    <circle cx="75" cy="75" r="32" fill="none" stroke="rgba(255,255,255,.2)" stroke-dasharray="3 4"/>
+    <circle cx="75" cy="75" r="58" fill="none" stroke="rgba(255,255,255,.2)" stroke-dasharray="3 4"/>
+    <circle cx="75" cy="75" r="16" fill="#F3C98B"/>
+    <circle cx="107" cy="75" r="6" fill="#6FD8C4"/><circle cx="30" cy="100" r="6" fill="#9B87F5"/><circle cx="75" cy="17" r="3" fill="#fff" opacity=".6"/></svg>`;
+}
+function constellation() {
+  const W = 300, N = 30, pts = [];
+  for (let i = N - 1; i >= 0; i--) {
+    const d = new Date(NOW()); d.setDate(d.getDate() - i);
+    const k = dkey(d), m = S.moods.find(x => x.d === k);
+    if (m) pts.push({ x: 14 + (N - 1 - i) * ((W - 28) / (N - 1)), y: 120 - (m.v - 1) * 20 + ((hashStr(k) % 17) - 8), v: m.v });
+  }
+  const lines = pts.slice(1).map((p, i) => `<line x1="${pts[i].x.toFixed(1)}" y1="${pts[i].y}" x2="${p.x.toFixed(1)}" y2="${p.y}" stroke="rgba(243,227,166,.35)" stroke-width="1"/>`).join('');
+  const stars = pts.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y}" r="${(2 + p.v * 0.8) * 2.4}" fill="#F3E3A6" opacity=".12"/><circle cx="${p.x.toFixed(1)}" cy="${p.y}" r="${(1.6 + p.v * 0.6).toFixed(1)}" fill="#F3E3A6"/>`).join('');
+  return { n: pts.length, svg: `<svg class="sky" viewBox="0 0 300 150" role="img" aria-label="Your check ins this month drawn as a constellation"><title>Your month of check ins</title>${lines}${stars}</svg>` };
+}
+function orbit() {
+  const cx = 160, cy = 160, list = reqs();
+  const claimed = list.filter(r => r.claimedBy && !r.done);
+  const open = list.filter(r => !r.claimedBy && !r.done);
+  let g = `<defs><radialGradient id="pl"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#D58FE0"/></radialGradient></defs>
+    <circle cx="${cx}" cy="${cy}" r="70" fill="none" stroke="rgba(255,255,255,.16)" stroke-dasharray="3 5"/>
+    <circle cx="${cx}" cy="${cy}" r="125" fill="none" stroke="rgba(255,255,255,.12)" stroke-dasharray="3 5"/>
+    <circle cx="${cx}" cy="${cy}" r="46" fill="#F3C98B" opacity=".14"/>
+    <circle cx="${cx}" cy="${cy}" r="30" fill="url(#pl)"/>
+    <text x="${cx}" y="${cy + 7}" text-anchor="middle" font-size="20" font-family="Young Serif,Georgia,serif" fill="#2A2250">${esc((momName() || 'M').charAt(0).toUpperCase())}</text>`;
+  claimed.forEach((r, i) => {
+    const late = status(r) === 'late', col = late ? '#F08DAA' : colorFor(r.claimedBy);
+    const dur = 20 + i * 4, ang = Math.round(i * 360 / claimed.length + 20);
+    g += `<g class="spin" style="--a:${ang}deg;animation-duration:${dur}s;animation-delay:${(-(ang / 360) * dur).toFixed(1)}s"><circle cx="${cx + 70}" cy="${cy}" r="16" fill="${col}" opacity=".22"/><circle cx="${cx + 70}" cy="${cy}" r="9" fill="${col}"/></g>`;
+  });
+  open.forEach((r, i) => {
+    const stale = status(r) === 'stale';
+    const dur = 70 + i * 9, ang = Math.round(i * 360 / open.length + 60);
+    g += `<g class="spin rev" style="--a:${ang}deg;animation-duration:${dur}s;animation-delay:${(-(ang / 360) * dur).toFixed(1)}s"><circle cx="${cx + 125}" cy="${cy}" r="4.5" fill="${stale ? '#F08DAA' : '#ffffff'}" opacity="${stale ? 0.8 : 0.5}"/></g>`;
+  });
+  const names = [...new Set(claimed.map(r => r.claimedBy))];
+  const legend = names.length ? `<div class="chips" style="margin-top:10px">${names.map(n => `<span class="badge"><span class="dot" style="background:${colorFor(n)}"></span>${esc(n)}</span>`).join('')}</div>` : '';
+  const caption = !list.length ? 'Nothing in orbit yet. Ask for help and your people appear here.'
+    : `${claimed.length} close, ${open.length} still drifting, ${list.filter(r => r.done).length} done.`;
+  return `<svg class="sky" viewBox="0 0 320 320" role="img" aria-label="Orbit view. ${esc(caption)}"><title>Your orbit</title>${g}</svg>
+    <p class="muted small" style="text-align:center">${esc(caption)}</p>${legend}`;
+}
+
+// ---------- views ----------
+function crisisCard() {
+  return `<section class="card crisis" role="alert">
+    <h2>You are not alone, and this is not your fault.</h2>
+    <p style="margin:10px 0 14px">Call or text 988 any time. For pregnancy and postpartum support, call or text 1 833 852 6262. If you or the baby are in danger, call 911.</p>
+    <div class="row">
+      <a class="btn primary" href="tel:988">Call 988</a>
+      <a class="btn" href="sms:988">Text 988</a>
+      <a class="btn" href="tel:+18338526262">Postpartum line</a>
+    </div></section>`;
+}
+
+function setupView() {
+  return `<section class="card stack">
+    <h1>Set up your circle.</h1>
+    <p class="muted">Your mood scores stay on your device.</p>
+    <label class="field">Your first name<input id="n-mom" type="text" autocomplete="given-name"></label>
+    <label class="field">One person who should know if you're struggling<input id="n-person" type="text" placeholder="Partner, sister, friend"></label>
+    <label class="field">Their phone number (optional)<input id="n-phone" type="tel" autocomplete="off"></label>
+    <button class="primary full" data-act="setup" type="button">Launch</button>
+    ${AUTH0_ON ? '<button class="full" data-act="login" type="button">I already have an account</button>' : ''}
+    <button class="quiet full" data-act="demo" type="button">Try with demo data</button>
+  </section>`;
+}
+function onboardView() {
+  if (slide >= SLIDES.length) return setupView();
+  const s = SLIDES[slide];
+  return `<section class="card slide">
+    ${s.art()}
+    <h1>${s.h}</h1>
+    <p class="muted">${s.p}</p>
+    <div class="dots" aria-hidden="true">${SLIDES.map((_, i) => `<i class="${i === slide ? 'on' : ''}"></i>`).join('')}</div>
+    <button class="primary full" data-act="next" type="button">${slide === SLIDES.length - 1 ? 'Get started' : 'Next'}</button>
+    <button class="quiet" data-act="demo" type="button">Skip to demo</button>
+  </section>`;
+}
+
+function nightView() {
+  const t = S.moods.find(x => x.d === dkey());
+  const calm = 'You are up, and that is okay. Breathe in slowly for four. Out for six. You are doing a hard thing, and you are not doing it wrong.';
+  return `<section class="night">
+    <div class="row between" style="width:100%"><button class="quiet" data-act="nightoff" type="button">Back</button>
+      <a class="crisisbar" style="padding:8px 12px" href="tel:988">Call or text <b>988</b></a></div>
+    <h1>You're up. That's okay.</h1>
+    <div class="breath" aria-hidden="true"></div>
+    <p class="muted">Breathe in for 4, out for 6.</p>
+    <p>How is your light right now?</p>
+    <div class="moons big" style="width:100%" role="group" aria-label="Light level">
+      ${[1, 2, 3, 4, 5].map(i => `<button type="button" class="moonbtn ${t && t.v === i ? 'on' : ''}" data-act="nightmood" data-v="${i}" aria-label="${MOON[i - 1]}">${moon(i, 44)}<span class="lbl">${MOON[i - 1]}</span></button>`).join('')}
+    </div>
+    <div class="row" style="justify-content:center">
+      <button data-act="speak" data-text="${esc(calm)}" type="button">Read this to me</button>
+      <button class="primary" data-act="nightask" type="button">Ask for help</button>
+    </div>
+    ${t && t.v <= 2 ? `<p class="muted small">Heavy nights are real. Asking for help counts as taking care of yourself.</p>` : ''}
+  </section>`;
+}
+
+function todayView() {
+  if (!S.mom) return onboardView();
+  if (night) return nightView();
+  const h = new Date(NOW()).getHours();
+  const hi = h < 5 ? 'Still up' : h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const done = S.moods.some(x => x.d === dkey());
+  const sig = S.alerts ? supportSignal() : null;
+  const sug = suggestions();
+  const last = [...S.moods].sort((a, b) => a.d < b.d ? -1 : 1).slice(-1)[0];
+  const jar = last && last.v <= 2 ? jarWin() : '';
+  const cons = constellation();
+  const prompt = 'How is your light today? Pick the moon that fits. There are no wrong answers.';
+  return `
+  <h1 style="margin-bottom:6px">${hi}, ${esc(S.mom)}.</h1>
+  <p class="muted" style="margin-bottom:14px">It takes about 30 seconds.</p>
+  <div class="stack" style="margin-bottom:14px">
+    <a class="crisisbar" href="tel:988">Need help right now? <b>Call or text 988</b></a>
+    <button id="nightbtn" class="full" data-act="nighton" type="button">I'm up at night</button>
+  </div>
+  ${crisisShown || (draft.crisis && done) ? crisisCard() : ''}
+  <section class="card">
+    <div class="row between"><h2>How is your light today?</h2>
+      <button class="quiet small" data-act="speak" data-text="${esc(prompt)}" type="button">Read aloud</button></div>
+    <div class="moons" id="moonsrow" role="group" aria-label="Light level">
+      ${[1, 2, 3, 4, 5].map(i => `<button type="button" class="moonbtn ${draft.v === i ? 'on' : ''}" data-act="mood" data-v="${i}" aria-pressed="${draft.v === i}" aria-label="${MOON[i - 1]}">${moon(i, 44)}<span class="lbl">${MOON[i - 1]}</span></button>`).join('')}
+    </div>
+    <p class="muted small" style="text-align:center;min-height:22px">${draft.v ? DESC[draft.v - 1] : 'Tap the moon that matches today.'}</p>
+    <div class="chips" style="margin:12px 0">
+      ${TAGS.map(t => `<button type="button" class="chip ${draft.tags.includes(t) ? 'on' : ''}" data-act="tag" data-tag="${esc(t)}" aria-pressed="${draft.tags.includes(t)}">${esc(t)}</button>`).join('')}
+    </div>
+    <div class="stack">
+      <label class="field">One small thing that went okay (optional)<input id="win" type="text" value="${esc(draft.win)}"></label>
+      <label class="field">Anything you want to remember (optional)<textarea id="note">${esc(draft.note)}</textarea></label>
+      <label class="row small" style="align-items:flex-start;gap:10px">
+        <input type="checkbox" data-act="crisis" ${draft.crisis ? 'checked' : ''} style="width:22px;height:22px;margin-top:2px">
+        <span>I'm having thoughts of hurting myself, or I feel like I can't go on.</span>
+      </label>
+      <button class="primary full" data-act="save" type="button">${done ? 'Update today' : 'Save today'}</button>
+    </div>
+  </section>
+  ${sug.length ? `<section class="card stack"><h3>Want help with that?</h3>
+    ${sug.map(i => `<button class="preset" data-act="preset" data-i="${i}" type="button">Ask for: ${esc(PRESETS[i].t)}</button>`).join('')}</section>` : ''}
+  ${sig ? `<section class="card alert stack">
+    <h3>Time to bring in ${esc(S.person || 'your person')}</h3>
+    <p>${esc(sig.why)} This is the note ${esc(S.person || 'they')} would get. It never includes your scores.</p>
+    <p class="quote">${esc(alertText())}</p>
+    ${S.phone ? `<a class="btn primary" href="${esc(smsHref(S.phone, alertText()))}">Send to ${esc(S.person)} now</a>`
+              : `<button class="primary" data-act="sharealert" type="button">Share this note</button>`}
+  </section>` : ''}
+  ${jar ? `<section class="card"><h3 style="margin-bottom:6px">From your good moments jar</h3><p class="muted">You wrote: ${esc(jar)}</p></section>` : ''}
+  <section class="card"><h3 style="margin-bottom:4px">Your constellation</h3>
+    <p class="muted small">${cons.n ? cons.n + (cons.n === 1 ? ' star' : ' stars') + ' this month. Brighter days sit higher.' : 'Each check in adds a star.'}</p>${cons.svg}</section>
+  <p class="muted small" style="text-align:center">Held is a check in tool, not a diagnosis or treatment. Your scores and notes stay on this device.</p>`;
+}
+
+function shareCard() {
+  return `<section class="card stack"><h3>Invite your circle</h3>
+    <p class="muted small">${S.circleId ? 'Family scans this code or taps the link. No account needed.' : (BACKEND ? 'Creating your link...' : 'Demo link. Add your Supabase keys and it works across phones.')}</p>
+    <div id="qr" class="qr" aria-label="QR code for the family link"></div>
+    <p class="small muted" style="word-break:break-all">${esc(familyLink())}</p>
+    <div class="row"><button class="primary" data-act="share" type="button">Share link</button><button data-act="copylink" type="button">Copy link</button></div>
+    ${AUTH0_ON && !user && authReady ? `<p class="muted small">Log in so you can reopen this circle on any phone.</p><button data-act="login" type="button">Log in or sign up</button>` : ''}</section>`;
+}
+function drawQR() {
+  const box = $('#qr');
+  if (!box) return;
+  try {
+    if (window.QRCode) { box.innerHTML = ''; new window.QRCode(box, { text: familyLink(), width: 168, height: 168, colorDark: '#2A2250', colorLight: '#F3E3A6', correctLevel: window.QRCode.CorrectLevel.M }); }
+    else box.textContent = 'QR unavailable offline';
+  } catch (e) { box.textContent = 'QR unavailable'; }
+}
+
+function orbitView() {
+  if (!S.mom) return onboardView();
+  return `<h1 style="margin-bottom:6px">Your orbit.</h1>
+    <p class="muted" style="margin-bottom:14px">Close moons are people who said yes. Faint dots are asks still waiting.</p>
+    <section class="card" id="orbitcard">${orbit()}</section>
+    ${shareCard()}`;
+}
+
+function reqCard(r, fam) {
+  const st = status(r);
+  const who = r.claimedBy ? `<span class="dot" style="background:${colorFor(r.claimedBy)}"></span>Claimed by ${esc(r.claimedBy)}` : 'Waiting for someone';
+  let acts = '';
+  if (fam) {
+    if (st === 'open' || st === 'stale') {
+      acts += `<button class="primary" data-act="claim" data-id="${esc(r.id)}" type="button">I'll do this</button>`;
+      if (r.gift) acts += `<a class="btn" href="${esc(r.gift)}" target="_blank" rel="noopener">Send it instead</a>`;
+    } else if (r.claimedBy && r.claimedBy === meName.trim() && st !== 'done') {
+      acts += `<button class="primary" data-act="done" data-id="${esc(r.id)}" type="button">Mark done</button>`;
+    }
+  } else {
+    if (r.claimedBy && st !== 'done') acts += `<button class="primary" data-act="done" data-id="${esc(r.id)}" type="button">Mark done</button>`;
+    if (st === 'late') acts += `<button data-act="nudge" data-id="${esc(r.id)}" type="button">Nudge ${esc(r.claimedBy)}</button>`;
+    if (st === 'open' || st === 'stale') acts += `<button data-act="ask" data-id="${esc(r.id)}" type="button">Ask again</button>`;
+    acts += `<button class="quiet" data-act="remove" data-id="${esc(r.id)}" type="button">Remove</button>`;
+  }
+  return `<div class="req">
+    <div class="row between"><span class="t">${esc(r.text)}</span><span class="badge ${st}">${BADGE[st]}</span></div>
+    <div class="small muted">${WHEN[r.when] ? WHEN[r.when][0] : ''}. ${who}.</div>
+    ${acts ? `<div class="row">${acts}</div>` : ''}</div>`;
+}
+
+function requestsView() {
+  if (!S.mom) return onboardView();
+  const active = reqs().filter(r => !r.done);
+  const finished = reqs().filter(r => r.done);
+  return `
+  <h1 style="margin-bottom:6px">Ask for what you need.</h1>
+  <p class="muted" style="margin-bottom:14px">Specific asks get answered. Family claims them, and Held keeps track.</p>
+  <section class="card stack">
+    <h3>When do you need it?</h3>
+    <div class="seg" id="whenseg" role="group" aria-label="When">
+      ${Object.entries(WHEN).map(([k, v]) => `<button type="button" class="${when === k ? 'on' : ''}" data-act="when" data-when="${k}" aria-pressed="${when === k}">${v[0]}</button>`).join('')}
+    </div>
+    ${PRESETS.map((p, i) => `<button class="preset" data-act="preset" data-i="${i}" type="button">${esc(p.t)}</button>`).join('')}
+    <label class="field">Something else<input id="custom" type="text" value="${esc(customText)}" placeholder="Write your own ask"></label>
+    <button class="full" data-act="addcustom" type="button">Add my own request</button>
+  </section>
+  <section class="card"><div class="row between" style="margin-bottom:10px"><h3>Your requests</h3>
+    <button class="primary" data-act="share" type="button">Share with family</button></div>
+    ${active.length ? active.map(r => reqCard(r, false)).join('') : '<p class="muted">Nothing open. Tap a request above and it appears here.</p>'}</section>
+  ${finished.length ? `<section class="card"><h3 style="margin-bottom:8px">Thank you log</h3>
+    ${finished.map(r => `<div class="req"><div class="t">${esc(r.text)}</div>
+      <div class="small muted"><span class="dot" style="background:${colorFor(r.claimedBy)}"></span>${esc(r.claimedBy)} came through.</div>
+      <div class="row"><button data-act="thanks" data-id="${esc(r.id)}" type="button">Say thanks</button></div></div>`).join('')}</section>` : ''}`;
+}
+
+function msgHtml(m) {
+  if (m.from === 'me') return `<div class="bubble me">${esc(m.text)}</div>`;
+  if (m.crisis) return `<div class="bubble ai"><p>I can't help with this one, and you deserve a real person right now. Please reach out below.</p></div>${crisisCard()}`;
+  const asks = (m.asks || []).map(i => `<button class="preset" data-act="helpadd" data-i="${i}" type="button">Add request: ${esc(PRESETS[i].t)}</button>`).join('');
+  const full = m.draft ? draftFull(m.draft) : '';
+  const draftHtml = full ? `<p class="quote">${esc(full)}</p><div class="row">
+      ${S.phone && !family ? `<a class="btn primary" href="${esc(smsHref(S.phone, full))}">Send to ${esc(S.person)}</a>` : ''}
+      <button data-act="sharedraft" data-t="${esc(full)}" type="button">Copy or share</button></div>` : '';
+  return `<div class="bubble ai"><p>${esc(m.text)}</p>${m.fallback ? '<p class="muted small" style="margin-top:6px">Basic mode</p>' : ''}</div>
+    ${asks ? `<div class="stack">${asks}</div>` : ''}${draftHtml}`;
+}
+function helperPanel(role) {
+  const mom = role === 'mom';
+  const chips = mom ? ["I'm overwhelmed and don't know what to ask for", "I haven't slept and I'm running on empty", 'Help me text my person']
+                    : ['What should I do for her this week?', 'What can I say that actually helps?', "I don't know where to start"];
+  return `<section class="card stack" id="helperbox">
+    <div class="row between"><h2>${mom ? 'Held Helper' : 'Not sure how to help?'}</h2><span class="badge">AI, not a person</span></div>
+    <p class="muted small">${mom ? 'Tell me what is going on. I can suggest specific asks and write the message for you.' : 'Ask what would help her most.'} I cannot diagnose or give medical advice. Only the words you type here are sent, and nothing is saved.</p>
+    <div class="chat" aria-live="polite">${chat.map(msgHtml).join('')}${helperBusy ? '<div class="bubble ai muted">Thinking...</div>' : ''}</div>
+    ${chat.length ? '' : `<div class="chips">${chips.map(c => `<button type="button" class="chip" data-act="helpchip" data-t="${esc(c)}">${esc(c)}</button>`).join('')}</div>`}
+    <label class="field">Message<textarea id="helptext" placeholder="Type here">${esc(helperText)}</textarea></label>
+    <button class="primary full" data-act="helpsend" type="button" ${helperBusy ? 'disabled' : ''}>Send</button>
+    ${chat.length ? '<button class="quiet" data-act="helpclear" type="button">Clear conversation</button>' : ''}
+  </section>`;
+}
+function helperView() {
+  if (!S.mom) return onboardView();
+  return `<h1 style="margin-bottom:14px">Helper</h1>${helperPanel('mom')}
+    <a class="crisisbar" href="tel:988">Need a person right now? <b>Call or text 988</b></a>`;
+}
+
+function moreView() {
+  if (!S.mom) return onboardView();
+  const sum = docSummary();
+  return `
+  <h1 style="margin-bottom:14px">More</h1>
+  <section class="card stack" id="helpcard"><h3>Get help</h3>
+    <p class="muted small">Free, private, and open all day and night.</p>
+    <div class="row"><a class="btn primary" href="tel:988">988 Crisis Lifeline</a><a class="btn" href="sms:988">Text 988</a></div>
+    <div class="row"><a class="btn" href="tel:+18338526262">Maternal Mental Health Hotline</a><a class="btn" href="sms:+18338526262">Text it</a></div>
+    <div class="row"><a class="btn" href="tel:+18009444773">Postpartum Support International</a>
+      <a class="btn" href="https://www.postpartum.net" target="_blank" rel="noopener">Find a group</a></div>
+    <p class="muted small">If you or the baby are in danger, call 911.</p>
+  </section>
+  <section class="card"><h3 style="margin-bottom:6px">Learn</h3>
+    <details class="acc"><summary>Baby blues or something more?</summary><p>Many mothers feel weepy, anxious, or overwhelmed in the first two weeks after birth. This is common and usually fades. If the feelings last longer, get stronger, or make it hard to care for yourself or your baby, talk to a doctor or midwife. Postpartum depression can start any time in the first year.</p></details>
+    <details class="acc"><summary>Signs worth telling someone</summary><p>Feeling numb or hopeless. Not sleeping even when the baby sleeps. Intense worry or anger. Trouble bonding with your baby. Pulling away from people you love.</p></details>
+    <details class="acc"><summary>Get help right now if</summary><p>You have thoughts of hurting yourself or your baby, you see or hear things that are not there, or you feel confused and unlike yourself. Call or text 988, or call 911.</p></details>
+    <details class="acc"><summary>You did nothing wrong</summary><p>Postpartum depression is common and treatable. It is not a character flaw, and asking for help is part of recovery.</p></details>
+    <p class="muted small" style="margin-top:8px">General information, not medical advice.</p>
+  </section>
+  <section class="card stack"><h3>Doctor visit summary</h3>
+    ${sum ? `<p class="quote">${esc(sum)}</p>
+      <label class="row small" style="gap:10px"><input type="checkbox" data-act="docnotes" ${docNotes ? 'checked' : ''} style="width:22px;height:22px"><span>Include my notes</span></label>
+      <button class="primary" data-act="sharedoc" type="button">Share summary</button>`
+      : '<p class="muted">Check in for a few days and a summary for your next appointment appears here. You choose what to include.</p>'}
+  </section>
+  <section class="card stack"><h3>Your person</h3>
+    <label class="field">Name<input id="s-person" type="text" value="${esc(S.person)}"></label>
+    <label class="field">Phone<input id="s-phone" type="tel" value="${esc(S.phone)}"></label>
+    <label class="row small" style="gap:10px"><input type="checkbox" data-act="alerts" ${S.alerts ? 'checked' : ''} style="width:22px;height:22px"><span>Remind me to alert them when my check ins dip</span></label>
+    <button data-act="savecontact" type="button">Save</button>
+  </section>
+  ${AUTH0_ON ? `<section class="card stack"><h3>Account</h3>
+    ${user ? `<p class="muted small">Signed in${user.email ? ' as ' + esc(user.email) : ''}. Your circle is saved to your login, so you can open it on any phone.</p>
+      <button data-act="logout" type="button">Log out</button>`
+    : `<p class="muted small">Log in so your circle is safe if you lose or change your phone. Family never needs an account.</p>
+      <button class="primary" data-act="login" type="button">Log in or sign up</button>`}
+  </section>` : ''}
+  <section class="card stack"><h3>Comfort</h3>
+    <label class="row small" style="gap:10px"><input type="checkbox" data-act="bigtext" ${S.big ? 'checked' : ''} style="width:22px;height:22px"><span>Larger text</span></label>
+  </section>
+  <section class="card stack"><h3>Tutorial and demo tools</h3>
+    <div class="row"><button data-act="replay" type="button">Replay the tour</button>
+      <button data-act="demo" type="button">Load demo data</button>
+      <button data-act="unwarp" type="button">Back to today</button>
+      <button class="quiet" data-act="reset" type="button">Clear all data</button></div>
+  </section>`;
+}
+
+function familyView() {
+  const mom = momName();
+  if (!mom) {
+    const msg = cache.gone ? ["This link isn't working.", 'Ask her to share the link again.']
+      : remoteFamily() ? ['Connecting...', 'One moment.'] : ["This circle isn't ready yet.", 'Ask her to finish setup, then open the link again.'];
+    return `<section class="card"><h1>${msg[0]}</h1><p class="muted" style="margin-top:8px">${msg[1]}</p></section>`;
+  }
+  const needs = needsNow();
+  const open = reqs().filter(r => !r.done);
+  const finished = reqs().filter(r => r.done);
+  return `
+  <h1 style="margin-bottom:6px">${esc(mom)}'s circle</h1>
+  <section class="card">
+    <h3 style="margin-bottom:6px">${needs ? 'She could use extra support this week.' : 'She is doing okay right now.'}</h3>
+    <p class="muted small">You only see this summary, never her check in details. Claiming one task helps most.</p>
+  </section>
+  <section class="card">${orbit()}</section>
+  <section class="card stack">
+    <label class="field">Your name<input id="meName" type="text" value="${esc(meName)}" placeholder="So she knows who is helping"></label>
+    ${open.length ? open.map(r => reqCard(r, true)).join('') : '<p class="muted">Everything is covered right now. Thank you.</p>'}
+  </section>
+  ${finished.length ? `<section class="card"><h3 style="margin-bottom:8px">Done</h3>${finished.map(r => reqCard(r, true)).join('')}</section>` : ''}
+  ${helperPanel('family')}
+  <section class="card cols"><h3>How to help well</h3>
+    <div><b>Try saying</b><ul class="plain"><li>I'm bringing dinner Tuesday. What time works?</li><li>You are doing a good job.</li><li>I'll hold the baby. Go rest.</li></ul></div>
+    <div><b>Skip saying</b><ul class="plain"><li>Just let me know if you need anything.</li><li>Sleep when the baby sleeps.</li><li>At least the baby is healthy.</li></ul></div>
+  </section>`;
+}
+
+// ---------- render ----------
+function renderBars() {
+  let h = '';
+  if (authBusy) h += `<div class="warpbar"><span>Signing you in...</span></div>`;
+  if (S.warp) h += `<div class="warpbar"><span>Demo time: ${S.warp} days ahead</span><button class="quiet small" data-act="unwarp" type="button">Reset</button></div>`;
+  if (BACKEND && NET() && !netOk) h += `<div class="warpbar bad"><span>Can't reach the server. Retrying.</span><button class="quiet small" data-act="retry" type="button">Retry now</button></div>`;
+  $('#bars').innerHTML = h;
+}
+function render() {
+  const views = { today: todayView, orbit: orbitView, requests: requestsView, helper: helperView, more: moreView };
+  $('#main').innerHTML = family ? familyView() : views[tab]();
+  $('#tabs').style.display = (!family && S.mom && !night) ? '' : 'none';
+  $('#app').classList.toggle('deep', night && !family);
+  document.documentElement.classList.toggle('big', !!S.big);
+  document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  $('#famToggle').textContent = family ? 'Mom view' : 'Family view';
+  $('#famToggle').style.display = remoteFamily() ? 'none' : '';
+  $('#warpBtn').style.display = (S.mom && !remoteFamily()) ? '' : 'none';
+  renderBars(); renderTour(); drawQR(); syncStatus();
+  if (BACKEND && authReady && S.mom && !S.circleId && !S.demo && !PARAM_CID) ensureCircle();
+}
+
+// ---------- actions ----------
+function addRequest(text, kind, gift) {
+  const r = { id: uid(), text, kind: kind || 'custom', gift: gift || '', when, due: endOfDay(WHEN[when][1]), claimedBy: '', done: false };
+  reqAdd(r);
+  toast('Request added.', () => reqRemove(r.id));
+  render();
+}
+
+function seedDemo() {
+  S = fresh(); S.mom = 'Maya'; S.person = 'Dre'; S.demo = true; S.toured = true;
+  [3, 3, 2, 2, 2, 1].forEach((v, i) => {
+    const d = new Date(NOW()); d.setDate(d.getDate() - (6 - i));
+    S.moods.push({ d: dkey(d), v, tags: i === 5 ? ['Slept a little', 'Felt alone'] : [], note: '', win: i === 2 ? 'Took a 10 minute walk outside' : '', crisis: false });
+  });
+  const mk = (text, w, due, by, done, gift) => ({ id: uid(), text, kind: 'demo', gift: gift || '', when: w, due, claimedBy: by, done });
+  S.requests = [
+    mk('Dinner, home cooked or delivered', 'today', endOfDay(0), '', false, 'https://www.doordash.com/'),
+    mk('Watch the baby so I can sleep for 2 hours', 'tomorrow', endOfDay(1), 'Jordan', false),
+    mk('Groceries or a pharmacy pickup', 'today', NOW() - 36e5, 'Aunt Mia', false, 'https://www.instacart.com/'),
+    mk('Laundry or dishes', 'week', endOfDay(6), 'Aunt Mia', true)
+  ];
+  save(); draft = newDraft(); slide = SLIDES.length; night = false; tab = 'today'; tour = -1; lastNeeds = null; chat = [];
+}
+
+function quickMood(v) {
+  snap();
+  const k = dkey(), cur = S.moods.find(x => x.d === k);
+  S.moods = S.moods.filter(x => x.d !== k);
+  S.moods.push({ d: k, v, tags: cur ? cur.tags : [], note: cur ? cur.note : '', win: cur ? cur.win : '', crisis: cur ? cur.crisis : false });
+  save(); draft = newDraft();
+}
+
+const actions = {
+  tab: el => { tab = el.dataset.tab; night = false; window.scrollTo(0, 0); },
+  family: () => { family = !family; chat = []; helperText = ''; },
+  next: () => { slide++; },
+  mood: el => { draft.v = +el.dataset.v; },
+  tag: el => { const t = el.dataset.tag; draft.tags = draft.tags.includes(t) ? draft.tags.filter(x => x !== t) : [...draft.tags, t]; },
+  crisis: el => { draft.crisis = el.checked; if (!el.checked) crisisShown = false; },
+  save: () => {
+    if (!draft.v) { toast('Pick a moon first.'); return 'skip'; }
+    snap();
+    const k = dkey();
+    S.moods = S.moods.filter(x => x.d !== k);
+    S.moods.push({ d: k, v: draft.v, tags: draft.tags, note: draft.note, win: draft.win.trim(), crisis: draft.crisis });
+    save(); crisisShown = draft.crisis;
+    toast(draft.v <= 2 ? "Saved. You don't have to carry this alone." : 'Saved. A new star is in your sky.', true);
+  },
+  setup: () => {
+    const mom = $('#n-mom').value.trim();
+    if (!mom) { toast('Add your first name to start.'); return 'skip'; }
+    S.mom = mom; S.person = $('#n-person').value.trim(); S.phone = $('#n-phone').value.trim(); save();
+    tab = 'today'; tour = 0; gotoStep();
+  },
+  demo: () => { seedDemo(); },
+  alerts: el => { S.alerts = el.checked; save(); },
+  bigtext: el => { S.big = el.checked; save(); },
+  savecontact: () => { S.person = $('#s-person').value.trim(); S.phone = $('#s-phone').value.trim(); save(); toast('Saved.'); return 'skip'; },
+  reset: () => {
+    if (!confirm('Clear everything saved on this device?')) return 'skip';
+    snap(); S = fresh(); save(); draft = newDraft(); crisisShown = false; slide = 0; tab = 'today'; night = false; tour = -1; lastNeeds = null; chat = [];
+    toast('Everything cleared.', true);
+  },
+  warp: () => { S.warp = (S.warp || 0) + 3; save(); toast('Three days later. Watch what changes.'); },
+  unwarp: () => { S.warp = 0; save(); draft = newDraft(); },
+  retry: () => { pull(); return 'skip'; },
+  login: () => {
+    if (!auth0c) { toast('Sign in is not available right now.'); return 'skip'; }
+    auth0c.loginWithRedirect({ authorizationParams: { redirect_uri: returnUrl() } });
+    return 'skip';
+  },
+  logout: () => {
+    if (!auth0c) return 'skip';
+    if (!confirm('Log out of Held on this phone?')) return 'skip';
+    auth0c.logout({ logoutParams: { returnTo: returnUrl() } });
+    return 'skip';
+  },
+  nighton: () => { night = true; window.scrollTo(0, 0); },
+  nightoff: () => { night = false; },
+  nightmood: el => { quickMood(+el.dataset.v); toast('Saved. Thank you for checking in.', true); },
+  nightask: () => { night = false; tab = 'helper'; },
+  speak: el => { speak(el.dataset.text); return 'skip'; },
+  sharealert: () => { shareText(alertText()); return 'skip'; },
+  docnotes: el => { docNotes = el.checked; },
+  sharedoc: () => { shareText(docSummary()); return 'skip'; },
+  when: el => { when = el.dataset.when; },
+  preset: el => { const p = PRESETS[+el.dataset.i]; addRequest(p.t, p.k, p.gift); return 'skip'; },
+  addcustom: () => {
+    const v = ($('#custom').value || '').trim();
+    if (!v) { toast('Write your request first.'); return 'skip'; }
+    customText = ''; addRequest(v.slice(0, 200)); return 'skip';
+  },
+  share: () => { shareText(S.mom + ' could use help. Pick something you can do: ' + familyLink()); return 'skip'; },
+  copylink: () => {
+    if (navigator.clipboard) navigator.clipboard.writeText(familyLink()).then(() => toast('Link copied.'));
+    else toast('Copy this: ' + familyLink());
+    return 'skip';
+  },
+  ask: el => { const r = findReq(el.dataset.id); shareText('Still need help with: ' + r.text + '. ' + familyLink()); return 'skip'; },
+  nudge: el => { const r = findReq(el.dataset.id); shareText('Hi ' + r.claimedBy + ', checking on "' + r.text + '" for ' + momName() + '. Are you still able to help? Thank you.'); return 'skip'; },
+  thanks: el => { const r = findReq(el.dataset.id); shareText('Thank you, ' + r.claimedBy + ', for helping with "' + r.text + '". It meant a lot.'); return 'skip'; },
+  claim: el => {
+    const name = meName.trim();
+    if (!name) { toast('Add your name first.'); const i = $('#meName'); if (i) i.focus(); return 'skip'; }
+    const id = el.dataset.id;
+    reqClaim(id, name);
+    toast('Thank you. You are in her orbit now.', () => reqUnclaim(id, name));
+  },
+  done: el => {
+    const id = el.dataset.id;
+    reqDone(id, true);
+    toast('Marked done.', () => reqDone(id, false));
+  },
+  remove: el => {
+    const r = reqRemove(el.dataset.id);
+    if (r) toast('Request removed.', () => reqAdd(r));
+  },
+  undo: () => {
+    const cb = undoCb; undoCb = null;
+    if (!cb) { toast('Nothing to undo.'); return; }
+    cb(); toast('Undone.');
+  },
+  helpchip: el => { sendHelper(el.dataset.t); return 'skip'; },
+  helpsend: () => { const t = $('#helptext'); sendHelper(helperText || (t ? t.value : '')); return 'skip'; },
+  helpclear: () => { chat = []; helperText = ''; },
+  helpadd: el => { const p = PRESETS[+el.dataset.i]; addRequest(p.t, p.k, p.gift); return 'skip'; },
+  sharedraft: el => { shareText(el.dataset.t); return 'skip'; },
+  tournext: () => { tour++; if (tour >= TOUR.length) { endTour(); return; } gotoStep(); },
+  tourback: () => { tour = Math.max(0, tour - 1); gotoStep(); },
+  tourskip: () => { endTour(); },
+  replay: () => { tour = 0; gotoStep(); window.scrollTo(0, 0); }
+};
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || !actions[el.dataset.act]) return;
+  if (el.type === 'checkbox' && e.target !== el) return;
+  const res = actions[el.dataset.act](el);
+  if (res !== 'skip') render();
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'note') draft.note = e.target.value;
+  if (e.target.id === 'win') draft.win = e.target.value;
+  if (e.target.id === 'custom') customText = e.target.value;
+  if (e.target.id === 'helptext') helperText = e.target.value;
+  if (e.target.id === 'meName') { meName = e.target.value; try { localStorage.setItem(ME_KEY, meName); } catch (err) {} }
+});
+
+// ---------- splash ----------
+(function () {
+  const el = $('#splash');
+  if (!el) return;
+  let seen = false;
+  try { seen = sessionStorage.getItem('held.splash') === '1'; sessionStorage.setItem('held.splash', '1'); } catch (e) {}
+  if (seen) { el.remove(); return; }
+  const hide = () => { el.classList.add('out'); setTimeout(() => el.remove(), 700); };
+  el.addEventListener('click', hide);
+  setTimeout(hide, 1800);
+})();
+
+// ---------- start ----------
+render();
+initAuth();
+if (NET()) pull();
+setInterval(() => { if (NET() && !document.hidden) pull(); }, 5000);
+document.addEventListener('visibilitychange', () => { if (NET() && !document.hidden) pull(); });
+if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "Held",
+  "short_name": "Held",
+  "description": "Support for new mothers: ask for specific help, let family claim it, and check in.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#120D2B",
+  "theme_color": "#120D2B",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
